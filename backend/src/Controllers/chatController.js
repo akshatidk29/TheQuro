@@ -60,13 +60,35 @@ export const ragQuery = async (req, res) => {
 };
 
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+
+const NUM_KEYS = parseInt(process.env.NUM_KEYS || "1");
+
+const apiKeys = Array.from({ length: NUM_KEYS }, (_, i) =>
+  process.env[`GEMINI_API_KEY_${i + 1}`]
+).filter(Boolean);
+
+const models = apiKeys.map((key) => {
+  const genAI = new GoogleGenerativeAI(key);
+  return genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+});
+
+let currentIndex = 0;
+
+export function getNextModel() {
+  const model = models[currentIndex];
+  currentIndex = (currentIndex + 1) % models.length;
+  return model;
+}
+
+
+
 
 export const Query = async (req, res) => {
     try {
         const { userEmail, currentQuestion, history = [] } = req.body;
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = getNextModel();
 
         // Construct a prompt using previous messages
         const prompt = `

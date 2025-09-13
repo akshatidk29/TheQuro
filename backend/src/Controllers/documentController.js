@@ -9,7 +9,7 @@ export const getUserDocuments = async (req, res) => {
     if (!email) return res.status(400).json({ error: "Email is required" });
 
     const folder = await OCRFolder.findOne({ userEmail: email });
-
+ 
     if (!folder || folder.files.length === 0) {
       return res.status(404).json({ error: "No documents found for this user" });
     }

@@ -2,21 +2,24 @@ import io
 import os
 import fitz
 from PIL import Image
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from dotenv import load_dotenv
 import google.generativeai as genai
+from langchain_google_genai import ChatGoogleGenerativeAI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 
 from pydantic import BaseModel
-from langchain_qdrant import Qdrant
+from langchain_qdrant import Qdrant 
 from qdrant_client import QdrantClient
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_google_genai import ChatGoogleGenerativeAI
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue, PointIdsList, Distance, VectorParams
 
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 
@@ -30,7 +33,6 @@ QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 COLLECTION_NAME = os.getenv("COLLECTION_NAME")
 vector_size = 384
 
-GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
 
 
 
@@ -223,8 +225,52 @@ app.add_middleware(
 
 
 # --------------------- Gemini Model ---------------------
-genai.configure(api_key=os.getenv(GOOGLE_API_KEY))
-model = genai.GenerativeModel("gemini-1.5-flash")
+
+NUM_KEYS = int(os.getenv("NUM_KEYS", "1"))
+API_KEYS = [
+    os.getenv(f"GEMINI_API_KEY_{i+1}")
+    for i in range(NUM_KEYS)
+    if os.getenv(f"GEMINI_API_KEY_{i+1}")
+]
+MODEL_ID = "gemini-1.5-flash"  
+
+LLM_MODELS = [
+    ChatGoogleGenerativeAI(model=MODEL_ID, google_api_key=key)
+    for key in API_KEYS
+]
+_index = 0
+
+def get_next_llm():
+    global _index
+    model = LLM_MODELS[_index]
+    _index = (_index + 1) % len(LLM_MODELS)
+    return model
+
+
+GENAI_MODELS = []
+for key in API_KEYS:
+    genai.configure(api_key=key)
+    model = genai.GenerativeModel(MODEL_ID)
+    GENAI_MODELS.append({
+        "key": key,
+        "model": model
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -263,21 +309,30 @@ def findpages(file_bytes):
     doc = fitz.open(stream=file_bytes, filetype="pdf")
     return len(doc)
 
-def extractText(images: List[Image.Image], description: str, course: str, topic: str) -> str:
-    texts = []
-    for idx, img in enumerate(images):
-        try:
-            response = model.generate_content([img, enrich_prompt(description, course, topic)])
-            text = response.text.strip()
-            if text:
-                texts.append(f"--- Page {idx + 1} ---\n{text}")
-        except Exception as e:
-            texts.append(f"--- Page {idx + 1} ---\nError: {str(e)}")
-    return "\n\n".join(texts)
+def process_page(model, idx: int, img: Image.Image, prompt: str) -> Tuple[int, str]:
+    try:
+        response = model.generate_content([img, prompt])
+        text = response.text.strip()
+        return idx, f"--- Page {idx + 1} ---\n{text}" if text else f"--- Page {idx + 1} ---\n[No Text Found]"
+    except Exception as e:
+        return idx, f"--- Page {idx + 1} ---\nError: {str(e)}"
 
 
+def extract_text_parallel(images: List[Image.Image], description: str, course: str, topic: str) -> str:
+    prompt = enrich_prompt(description, course, topic)
+    results = [None] * len(images)
 
+    with ThreadPoolExecutor(max_workers=NUM_KEYS) as executor:
+        futures = []
+        for idx, img in enumerate(images):
+            model = GENAI_MODELS[idx % NUM_KEYS]["model"]
+            futures.append(executor.submit(process_page, model, idx, img, prompt))
 
+        for future in as_completed(futures):
+            idx, result = future.result()
+            results[idx] = result
+
+    return "\n\n".join(results)
 
 
 
@@ -300,7 +355,7 @@ async def extract_from_image(
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid image file")
 
-    extracted_text = extractText([image], description, course, topic)
+    extracted_text = extract_text_parallel([image], description, course, topic)
 
     store_in_qdrant(extracted_text, {
         "userEmail": userEmail,
@@ -367,7 +422,7 @@ async def extract_from_pdf(
     except Exception:
         raise HTTPException(status_code=400, detail="Could not process PDF")
 
-    extracted_text = extractText(images, description, course, topic)
+    extracted_text = extract_text_parallel(images, description, course, topic)
 
     store_in_qdrant(extracted_text, {
         "userEmail": userEmail,
@@ -447,6 +502,15 @@ class ChatQuery(BaseModel):
 
 
 
+
+
+
+
+
+
+
+
+
 @app.post("/rag/chat")
 async def chat_only(payload: ChatOnlyRequest):
     try:
@@ -470,11 +534,7 @@ User Question:
 
 Answer:"""
 
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash",
-            google_api_key=GOOGLE_API_KEY
-        )
-
+        llm = get_next_llm()
         response = llm.invoke(prompt)
         return {"answer": response.content}
 

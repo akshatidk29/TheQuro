@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
-    "dev": "concurrently \"nodemon src/index.js\" \"uvicorn src.Services.ocrService:app --host 0.0.0.0 --reload --port 8001\""
+    "dev": "concurrently \"nodemon src/index.js\" \"python -m uvicorn src.Services.ocrService:app --host 0.0.0.0 --reload --port 8001\""
   },
   "keywords": [],
   "author": "",

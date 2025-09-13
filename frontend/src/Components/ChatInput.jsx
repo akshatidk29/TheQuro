@@ -1,4 +1,3 @@
-
 import { Send } from "lucide-react";
 
 const ChatInput = ({ userEmail, course, sendMessage, loading, input, setInput, sendGeneralMessage }) => {
@@ -15,34 +14,41 @@ const ChatInput = ({ userEmail, course, sendMessage, loading, input, setInput, s
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
   };
 
+  const getPlaceholder = () => {
+    if (!course) return "Select a course to start chatting";
+    if (course === "General Questions") return "Ask me anything...";
+    return `Ask me anything about ${course}...`;
+  };
+
   return (
     <div className="relative">
-      <div className="flex items-center gap-3 p-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-lg">
-        <div className="flex-1 relative">
+      <div className="flex items-center gap-3 p-3 bg-white/70 backdrop-blur-md border border-gray-300 rounded-xl shadow-md transition">
+        <div className="relative flex-1">
           <input
             type="text"
-            className="w-full bg-gray-50/50 border-0 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition-all duration-200 placeholder-gray-500"
-            placeholder={course ? `Ask me anything about ${course}...` : "Select a course to start chatting"}
+            className="w-full px-4 py-3 pr-12 text-sm bg-white border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-300 transition-all placeholder-gray-500 disabled:bg-gray-100"
+            placeholder={getPlaceholder()}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={loading || !course}
           />
 
-          {/* Loading indicator inside input */}
           {loading && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              </div>
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex space-x-1">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"
+                  style={{ animationDelay: `${i * 0.15}s` }}
+                />
+              ))}
             </div>
           )}
         </div>
@@ -50,9 +56,9 @@ const ChatInput = ({ userEmail, course, sendMessage, loading, input, setInput, s
         <button
           onClick={handleSubmit}
           disabled={loading || !input.trim() || !course}
-          className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+          className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
         >
-          <Send className="w-5 h-5" />
+          <Send className="w-4 h-4" />
         </button>
       </div>
     </div>

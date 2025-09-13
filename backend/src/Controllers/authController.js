@@ -5,7 +5,7 @@ import User from "../Models/userModel.js";
 
 import { sendOtpEmail } from "./sendOtpEmail.js";
 import { generateToken } from "../Lib/utils.js";
-
+ 
 
 export const checkAuth = (req, res) => {
   try {

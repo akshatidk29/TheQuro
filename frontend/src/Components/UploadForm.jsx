@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 
 const InputField = ({ label, value, setValue, type = "text", required = true }) => (
@@ -34,15 +35,17 @@ const UploadForm = ({
   setTopic,
   name,
   setName,
-  date,
-  setDate,
   description,
   setDescription,
   handleSubmit,
   isUploading,
 }) => {
+  const handleFormSubmit = () => {
+    handleSubmit();
+  };
+
   return (
-    <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-6">
+    <form onSubmit={(e) => { e.preventDefault(); handleFormSubmit(); }} className="space-y-6">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Upload File (Image or PDF)</label>
         <input
@@ -58,7 +61,6 @@ const UploadForm = ({
         <InputField label="Course" value={course} setValue={setCourse} />
         <InputField label="Topic" value={topic} setValue={setTopic} />
         <InputField label="Note Name" value={name} setValue={setName} />
-        <InputField label="Date" type="date" value={date} setValue={setDate} />
       </div>
 
       <TextArea label="Description" value={description} setValue={setDescription} />
