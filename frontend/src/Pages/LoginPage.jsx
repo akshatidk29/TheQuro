@@ -22,13 +22,16 @@ const FormInput = ({
 
   return (
     <div className="space-y-2">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
       <div className="relative">
         {Icon && (
-          <Icon className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 ${error ? 'text-red-400' : 'text-gray-400'
-            }`} />
+          <Icon
+            className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 ${
+              error ? "text-red-400" : "text-gray-400"
+            }`}
+          />
         )}
         <input
           required={required}
@@ -40,15 +43,21 @@ const FormInput = ({
           disabled={disabled}
           placeholder={placeholder}
           className={`
-            w-full h-12 px-4 ${Icon ? 'pl-12' : ''} ${type === 'password' ? 'pr-12' : ''}
-            bg-white dark:bg-gray-800 
-            border ${error ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'}
-            rounded-xl text-gray-900 dark:text-white
-            placeholder-gray-500 dark:placeholder-gray-400
-            focus:outline-none focus:ring-2 ${error ? 'focus:ring-red-500' : 'focus:ring-blue-500'} focus:border-transparent
+            w-full h-12 px-4 ${Icon ? "pl-12" : ""} ${
+            type === "password" ? "pr-12" : ""
+          }
+            bg-white 
+            border ${
+              error ? "border-red-300" : "border-gray-300"
+            }
+            rounded-xl text-gray-900
+            placeholder-gray-500
+            focus:outline-none focus:ring-2 ${
+              error ? "focus:ring-red-500" : "focus:ring-blue-500"
+            } focus:border-transparent
             disabled:bg-gray-100 disabled:cursor-not-allowed
             transition-all duration-200 ease-in-out
-            hover:border-gray-400 dark:hover:border-gray-500
+            hover:border-gray-400
           `}
         />
         {type === "password" && (
@@ -74,14 +83,15 @@ const Button = ({
   onClick,
   className = ""
 }) => {
-  const baseClasses = "w-full h-12 font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
+  const baseClasses =
+    "w-full h-12 font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
 
   const variants = {
     primary: `${baseClasses} bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 
               text-white focus:ring-blue-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
               disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none`,
-    secondary: `${baseClasses} bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 
-                text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-500`
+    secondary: `${baseClasses} bg-white border-2 border-gray-300 
+                text-gray-700 hover:bg-gray-50 focus:ring-gray-500`
   };
 
   return (
@@ -101,9 +111,9 @@ const ErrorAlert = ({ message }) => {
   if (!message) return null;
 
   return (
-    <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-      <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400 flex-shrink-0" />
-      <span className="text-sm text-red-700 dark:text-red-300">{message}</span>
+    <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+      <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
+      <span className="text-sm text-red-700">{message}</span>
     </div>
   );
 };
@@ -126,7 +136,6 @@ const LoginPage = () => {
       ...prev,
       [e.target.name]: e.target.value,
     }));
-    // Clear error when user starts typing
     if (error) setError("");
   };
 
@@ -142,7 +151,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(59,130,246,0.1)_1px,transparent_0)] bg-[size:20px_20px]"></div>
 
@@ -150,23 +159,28 @@ const LoginPage = () => {
         <div className="w-full max-w-md">
           {/* Logo/Brand Section */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl mb-4 shadow-lg">
-              <span className="text-2xl font-bold text-white">Q</span>
+            <div className="inline-flex items-center justify-center w-16 h-16 
+                               rounded-2xl mb-4 shadow-lg overflow-hidden">
+              <img
+                src="Quro.png"
+                alt="Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Welcome back
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Sign in to TheQuro            </p>
+            <p className="text-gray-600">
+              Sign in to TheQuro
+            </p>
           </div>
 
           {/* Main Card */}
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/20">
-            {/* Error Alert */}
+          <div className="bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20">
             {error && <ErrorAlert message={error} />}
 
             <form onSubmit={handleSubmit} className="space-y-6 mt-6">
-              {/* Email Field */}
               <FormInput
                 label="Email Address"
                 name="email"
@@ -179,7 +193,6 @@ const LoginPage = () => {
                 error={!!error}
               />
 
-              {/* Password Field */}
               <FormInput
                 label="Password"
                 name="password"
@@ -192,18 +205,16 @@ const LoginPage = () => {
                 error={!!error}
               />
 
-              {/* Forgot Password Link */}
               <div className="text-right">
                 <button
                   type="button"
                   onClick={() => navigate("/forgot-password")}
-                  className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                  className="text-sm text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   Forgot password?
                 </button>
               </div>
 
-              {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={isLoggingIn}
@@ -225,23 +236,21 @@ const LoginPage = () => {
 
             {/* Divider */}
             <div className="my-8 flex items-center">
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
-              <span className="px-4 text-sm text-gray-500 dark:text-gray-400 bg-white/80 dark:bg-gray-800/80">
+              <div className="flex-1 border-t border-gray-300"></div>
+              <span className="px-4 text-sm text-gray-500 bg-white/80">
                 or continue with
               </span>
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+              <div className="flex-1 border-t border-gray-300"></div>
             </div>
 
-            {/* Google Login */}
             <GoogleLoginButton navigate={navigate} />
 
-            {/* Sign Up Link */}
             <div className="mt-8 text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600">
                 Don't have an account?{" "}
                 <button
                   onClick={() => navigate("/signup")}
-                  className="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                  className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   Create one here
                 </button>
@@ -249,12 +258,6 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="mt-8 text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Protected by industry-standard encryption and security measures
-            </p>
-          </div>
         </div>
       </div>
     </div>

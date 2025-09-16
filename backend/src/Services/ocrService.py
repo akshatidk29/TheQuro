@@ -1,6 +1,8 @@
 import io
 import os
 import fitz
+import time
+import threading
 from PIL import Image
 from typing import List, Dict, Tuple
 from dotenv import load_dotenv
@@ -18,7 +20,7 @@ from qdrant_client.http.models import Filter, FieldCondition, MatchValue, PointI
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
@@ -225,6 +227,7 @@ app.add_middleware(
 
 
 # --------------------- Gemini Model ---------------------
+# --------------------- Gemini Model ---------------------
 
 NUM_KEYS = int(os.getenv("NUM_KEYS", "1"))
 API_KEYS = [
@@ -232,12 +235,61 @@ API_KEYS = [
     for i in range(NUM_KEYS)
     if os.getenv(f"GEMINI_API_KEY_{i+1}")
 ]
-MODEL_ID = "gemini-1.5-flash"  
+MODEL_ID = "gemini-2.0-flash"
 
-LLM_MODELS = [
-    ChatGoogleGenerativeAI(model=MODEL_ID, google_api_key=key)
-    for key in API_KEYS
-]
+GENAI_MODELS = [{"key": key, "index": i} for i, key in enumerate(API_KEYS)]
+print(f"Configured {len(GENAI_MODELS)} API keys for load balancing")
+
+# ----- NEW: Per-key request timing tracking -----
+last_request_time = defaultdict(lambda: 0)
+lock = threading.Lock()
+MIN_DELAY = 4  # 15 req/min -> at least 4s between requests per key
+
+
+def process_page(api_key: str, idx: int, img: Image.Image, prompt: str) -> Tuple[int, str]:
+    try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel(MODEL_ID)
+        response = model.generate_content([img, prompt])
+        text = response.text.strip()
+        return idx, f"--- Page {idx + 1} ---\n{text}" if text else f"--- Page {idx + 1} ---\n[No Text Found]"
+    except Exception as e:
+        return idx, f"--- Page {idx + 1} ---\nError: {str(e)}"
+
+
+def throttled_process_page(api_key: str, idx: int, img: Image.Image, prompt: str):
+    # Ensure per-key delay so we stay under quota
+    with lock:
+        now = time.time()
+        elapsed = now - last_request_time[api_key]
+        if elapsed < MIN_DELAY:
+            wait_time = MIN_DELAY - elapsed
+            print(f"[Key {api_key[:6]}...] Waiting {wait_time:.2f}s before sending request...")
+            time.sleep(wait_time)
+        last_request_time[api_key] = time.time()
+    return process_page(api_key, idx, img, prompt)
+
+
+def extract_text_parallel(images: List[Image.Image], description: str, course: str, topic: str) -> str:
+    prompt = enrich_prompt(description, course, topic)
+    results = [None] * len(images)
+
+    with ThreadPoolExecutor(max_workers=min(len(images), len(API_KEYS))) as executor:
+        futures = []
+        for idx, img in enumerate(images):
+            api_key = API_KEYS[idx % len(API_KEYS)]
+            futures.append(executor.submit(throttled_process_page, api_key, idx, img, prompt))
+            print(f"Page {idx + 1} assigned to API key {(idx % len(API_KEYS)) + 1}")
+
+        for future in as_completed(futures):
+            idx, result = future.result()
+            results[idx] = result
+
+    return "\n\n".join(results)
+
+
+# Round-robin LLM access for other tasks
+LLM_MODELS = [ChatGoogleGenerativeAI(model=MODEL_ID, google_api_key=key) for key in API_KEYS]
 _index = 0
 
 def get_next_llm():
@@ -245,20 +297,6 @@ def get_next_llm():
     model = LLM_MODELS[_index]
     _index = (_index + 1) % len(LLM_MODELS)
     return model
-
-
-GENAI_MODELS = []
-for key in API_KEYS:
-    genai.configure(api_key=key)
-    model = genai.GenerativeModel(MODEL_ID)
-    GENAI_MODELS.append({
-        "key": key,
-        "model": model
-    })
-
-
-
-
 
 
 
@@ -309,30 +347,30 @@ def findpages(file_bytes):
     doc = fitz.open(stream=file_bytes, filetype="pdf")
     return len(doc)
 
-def process_page(model, idx: int, img: Image.Image, prompt: str) -> Tuple[int, str]:
-    try:
-        response = model.generate_content([img, prompt])
-        text = response.text.strip()
-        return idx, f"--- Page {idx + 1} ---\n{text}" if text else f"--- Page {idx + 1} ---\n[No Text Found]"
-    except Exception as e:
-        return idx, f"--- Page {idx + 1} ---\nError: {str(e)}"
+# def process_page(model, idx: int, img: Image.Image, prompt: str) -> Tuple[int, str]:
+#     try:
+#         response = model.generate_content([img, prompt])
+#         text = response.text.strip()
+#         return idx, f"--- Page {idx + 1} ---\n{text}" if text else f"--- Page {idx + 1} ---\n[No Text Found]"
+#     except Exception as e:
+#         return idx, f"--- Page {idx + 1} ---\nError: {str(e)}"
 
 
-def extract_text_parallel(images: List[Image.Image], description: str, course: str, topic: str) -> str:
-    prompt = enrich_prompt(description, course, topic)
-    results = [None] * len(images)
+# def extract_text_parallel(images: List[Image.Image], description: str, course: str, topic: str) -> str:
+#     prompt = enrich_prompt(description, course, topic)
+#     results = [None] * len(images)
 
-    with ThreadPoolExecutor(max_workers=NUM_KEYS) as executor:
-        futures = []
-        for idx, img in enumerate(images):
-            model = GENAI_MODELS[idx % NUM_KEYS]["model"]
-            futures.append(executor.submit(process_page, model, idx, img, prompt))
+#     with ThreadPoolExecutor(max_workers=min(len(images), 20)) as executor:
+#         futures = []
+#         for idx, img in enumerate(images):
+#             model = GENAI_MODELS[idx % NUM_KEYS]["model"]
+#             futures.append(executor.submit(process_page, model, idx, img, prompt))
 
-        for future in as_completed(futures):
-            idx, result = future.result()
-            results[idx] = result
+#         for future in as_completed(futures):
+#             idx, result = future.result()
+#             results[idx] = result
 
-    return "\n\n".join(results)
+#     return "\n\n".join(results)
 
 
 

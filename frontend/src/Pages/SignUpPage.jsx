@@ -20,7 +20,7 @@ const FormInput = ({
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <label className="block text-sm font-medium text-gray-700">
         {label}
       </label>
       <div className="relative">
@@ -37,14 +37,14 @@ const FormInput = ({
           placeholder={placeholder}
           className={`
             w-full h-12 px-4 ${Icon ? 'pl-12' : ''} ${type === 'password' ? 'pr-12' : ''}
-            bg-white dark:bg-gray-800 
-            border border-gray-300 dark:border-gray-600 
-            rounded-xl text-gray-900 dark:text-white
-            placeholder-gray-500 dark:placeholder-gray-400
+            bg-white 
+            border border-gray-300 
+            rounded-xl text-gray-900 
+            placeholder-gray-500
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
             disabled:bg-gray-100 disabled:cursor-not-allowed
             transition-all duration-200 ease-in-out
-            hover:border-gray-400 dark:hover:border-gray-500
+            hover:border-gray-400
           `}
         />
         {type === "password" && (
@@ -66,13 +66,13 @@ const OTPInput = ({ otpDigits, otpRefs, onOtpChange, onOtpKeyDown }) => {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full mb-4">
-          <Mail className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+          <Mail className="h-8 w-8 text-blue-600" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
           Check your email
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-gray-600">
           We've sent a 6-digit verification code to your email address
         </p>
       </div>
@@ -89,9 +89,9 @@ const OTPInput = ({ otpDigits, otpRefs, onOtpChange, onOtpKeyDown }) => {
             onChange={(e) => onOtpChange(idx, e.target.value)}
             onKeyDown={(e) => onOtpKeyDown(e, idx)}
             className="w-12 h-14 text-xl font-semibold text-center 
-                     bg-white dark:bg-gray-800 
-                     border-2 border-gray-300 dark:border-gray-600 
-                     rounded-xl text-gray-900 dark:text-white
+                     bg-white 
+                     border-2 border-gray-300 
+                     rounded-xl text-gray-900
                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                      transition-all duration-200"
           />
@@ -116,8 +116,8 @@ const Button = ({
     primary: `${baseClasses} bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 
               text-white focus:ring-blue-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
               disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none`,
-    secondary: `${baseClasses} bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 
-                text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-500`
+    secondary: `${baseClasses} bg-white border-2 border-gray-300 
+                text-gray-700 hover:bg-gray-50 focus:ring-gray-500`
   };
 
   return (
@@ -198,7 +198,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(59,130,246,0.1)_1px,transparent_0)] bg-[size:20px_20px]"></div>
 
@@ -206,19 +206,24 @@ const SignUpPage = () => {
         <div className="w-full max-w-md">
           {/* Logo/Brand Section */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl mb-4 shadow-lg">
-              <span className="text-2xl font-bold text-white">Q</span>
+            <div className="inline-flex items-center justify-center w-16 h-16 
+                               rounded-2xl mb-4 shadow-lg overflow-hidden">
+              <img
+                src="Quro.png"
+                alt="Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Join TheQuro
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600">
               {otpStage ? "Almost there! Verify your email" : "Create your account and start taking better notes"}
             </p>
           </div>
 
           {/* Main Card */}
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/20">
+          <div className="bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20">
             <form onSubmit={otpStage ? handleOtpSubmit : handleFormSubmit} className="space-y-6">
               {!otpStage ? (
                 <>
@@ -231,7 +236,7 @@ const SignUpPage = () => {
                       onChange={handleChange}
                       required
                       icon={User}
-                      placeholder="John"
+                      placeholder="First Name"
                     />
                     <FormInput
                       label="Last Name"
@@ -240,7 +245,7 @@ const SignUpPage = () => {
                       onChange={handleChange}
                       required
                       icon={User}
-                      placeholder="Doe"
+                      placeholder="Last Name"
                     />
                   </div>
 
@@ -253,7 +258,7 @@ const SignUpPage = () => {
                     onChange={handleChange}
                     required
                     icon={Mail}
-                    placeholder="john@example.com"
+                    placeholder="you@example.com"
                   />
 
                   {/* Password Field */}
@@ -322,11 +327,11 @@ const SignUpPage = () => {
               <>
                 {/* Divider */}
                 <div className="my-8 flex items-center">
-                  <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
-                  <span className="px-4 text-sm text-gray-500 dark:text-gray-400 bg-white/80 dark:bg-gray-800/80">
+                  <div className="flex-1 border-t border-gray-300"></div>
+                  <span className="px-4 text-sm text-gray-500 bg-white/80">
                     or continue with
                   </span>
-                  <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+                  <div className="flex-1 border-t border-gray-300"></div>
                 </div>
 
                 {/* Google Sign Up */}
@@ -334,11 +339,11 @@ const SignUpPage = () => {
 
                 {/* Login Link */}
                 <div className="mt-8 text-center">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-gray-600">
                     Already have an account?{" "}
                     <button
                       onClick={() => navigate("/login")}
-                      className="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                      className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                     >
                       Sign in here
                     </button>
@@ -346,16 +351,6 @@ const SignUpPage = () => {
                 </div>
               </>
             )}
-          </div>
-
-          {/* Footer */}
-          <div className="mt-8 text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              By creating an account, you agree to our{" "}
-              <a href="#" className="text-blue-600 hover:text-blue-700 dark:text-blue-400">Terms of Service</a>
-              {" "}and{" "}
-              <a href="#" className="text-blue-600 hover:text-blue-700 dark:text-blue-400">Privacy Policy</a>
-            </p>
           </div>
         </div>
       </div>

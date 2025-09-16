@@ -5,7 +5,7 @@ import User from "../Models/userModel.js";
 
 import { sendOtpEmail } from "./sendOtpEmail.js";
 import { generateToken } from "../Lib/utils.js";
- 
+
 
 export const checkAuth = (req, res) => {
   try {
@@ -98,6 +98,8 @@ export const verifyOtp = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
+      tokens: 1000,
+      tokenHistory: [{ type: "Credit", amount: 1000, reason: "Signup Bonus" }]
     });
 
     await Otp.deleteMany({ email });
@@ -140,6 +142,8 @@ export const googleSignup = async (req, res) => {
       email,
       profilePic,
       password: "heyyyyy",
+      tokens: 1000,
+      tokenHistory: [{ type: "Credit", amount: 1000, reason: "Signup Bonus" }]
     });
 
 
@@ -167,7 +171,7 @@ export const googleLogin = async (req, res) => {
       return res.status(404).json({ message: "No account found with this Google email" });
     }
 
-    generateToken(user._id, res); 
+    generateToken(user._id, res);
 
     res.status(200).json({
       _id: user._id,

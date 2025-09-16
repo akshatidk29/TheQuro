@@ -1,11 +1,11 @@
 const Footer = () => {
     return (
-        <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
+        <div className="bg-gradient-to-tr from-gray-900 via-indigo-950 to-black">
             <footer className="py-20 bg-black/20 backdrop-blur-sm border-t border-white/10">
                 <div className="max-w-6xl mx-auto px-4 sm:px-8">
                     <div className="grid lg:grid-cols-4 gap-8 mb-12">
                         <div>
-                            <h3 className="text-3xl font-extrabold mb-4 bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">
+                            <h3 className="text-3xl font-extrabold mb-4 text-white">
                                 TheQuro
                             </h3>
                             <p className="text-gray-400 mb-4">
@@ -44,7 +44,7 @@ const Footer = () => {
                     </div>
 
                     <div className="border-t border-white/10 pt-8 text-center text-gray-500 text-sm">
-                        <p>&copy; 2025 TheQuro. All rights reserved. Built with ❤️ for learners worldwide.</p>
+                        <p>&copy; 2025 TheQuro. All rights reserved.</p>
                     </div>
                 </div>
             </footer>

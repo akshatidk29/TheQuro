@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { 
-  ArrowDown, 
-  ArrowUp, 
-  Filter, 
-  Calendar, 
-  Download, 
-  Search, 
-  CreditCard, 
-  Coins, 
+import {
+  ArrowDown,
+  ArrowUp,
+  Filter,
+  Calendar,
+  Download,
+  Search,
+  CreditCard,
+  Coins,
   TrendingUp,
   Clock,
   Check,
@@ -27,7 +27,7 @@ const TransactionHistory = () => {
     dateRange: "all", // all, week, month, 3months
     search: ""
   });
-  
+
   const { authUser, checkAuth } = useAuthStore();
 
   // Token packages
@@ -84,7 +84,7 @@ const TransactionHistory = () => {
 
     // Search filter
     if (filters.search) {
-      filtered = filtered.filter(txn => 
+      filtered = filtered.filter(txn =>
         (txn.reason || "").toLowerCase().includes(filters.search.toLowerCase())
       );
     }
@@ -93,7 +93,7 @@ const TransactionHistory = () => {
     if (filters.dateRange !== "all") {
       const now = new Date();
       const cutoffDate = new Date();
-      
+
       switch (filters.dateRange) {
         case "week":
           cutoffDate.setDate(now.getDate() - 7);
@@ -105,7 +105,7 @@ const TransactionHistory = () => {
           cutoffDate.setMonth(now.getMonth() - 3);
           break;
       }
-      
+
       filtered = filtered.filter(txn => new Date(txn.date) >= cutoffDate);
     }
 
@@ -145,7 +145,7 @@ const TransactionHistory = () => {
   };
 
   const getTransactionIcon = (type) => {
-    return type === "credit" ? (
+    return type === "Credit" ? (
       <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
         <ArrowUp className="w-5 h-5 text-green-600" />
       </div>
@@ -193,9 +193,8 @@ const TransactionHistory = () => {
           <div className="flex gap-3">
             <button
               onClick={() => setShowBuyTokens(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="bg-blue-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
             >
-              <Coins className="w-4 h-4" />
               Buy Tokens
             </button>
             <button
@@ -216,8 +215,8 @@ const TransactionHistory = () => {
                 <p className="text-sm text-gray-600">Current Balance</p>
                 <p className="text-2xl font-bold text-gray-900">{authUser?.tokens || 0}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <Coins className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-yellow-300 rounded-full flex items-center justify-center">
+                <Coins className="w-6 h-6" />
               </div>
             </div>
           </div>
@@ -227,8 +226,8 @@ const TransactionHistory = () => {
                 <p className="text-sm text-gray-600">Total Transactions</p>
                 <p className="text-2xl font-bold text-gray-900">{transactions.length}</p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                <Clock className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center">
+                <Clock className="w-6 h-6" />
               </div>
             </div>
           </div>
@@ -241,7 +240,7 @@ const TransactionHistory = () => {
               <Filter className="w-4 h-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">Filters:</span>
             </div>
-            
+
             {/* Search */}
             <div className="relative min-w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -253,7 +252,7 @@ const TransactionHistory = () => {
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
-            
+
             {/* Type Filter */}
             <select
               value={filters.type}
@@ -264,7 +263,7 @@ const TransactionHistory = () => {
               <option value="Credit">Credits</option>
               <option value="Deduct">Debits</option>
             </select>
-            
+
             {/* Date Range Filter */}
             <select
               value={filters.dateRange}
@@ -276,7 +275,7 @@ const TransactionHistory = () => {
               <option value="month">Last 30 Days</option>
               <option value="3months">Last 3 Months</option>
             </select>
-            
+
             {/* Limit Filter */}
             <select
               value={filters.limit}
@@ -299,7 +298,7 @@ const TransactionHistory = () => {
             Transactions ({filteredTransactions.length})
           </h2>
         </div>
-        
+
         {filteredTransactions.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -316,7 +315,7 @@ const TransactionHistory = () => {
                     {getTransactionIcon(txn.type)}
                     <div>
                       <p className="font-medium text-gray-900">
-                        {txn.type === "credit" ? "Token Purchase" : txn.reason || "Token Usage"}
+                        {txn.type === "Credit" ? txn.reason || "Token Purchase" : txn.reason || "Token Usage"}
                       </p>
                       <div className="flex items-center gap-4 mt-1">
                         <p className="text-sm text-gray-500">{formatDate(txn.date)}</p>
@@ -324,9 +323,9 @@ const TransactionHistory = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="text-right">
-                    <div className={`text-lg font-semibold ${txn.type === "credit" ? "text-green-600" : "text-red-600"}`}>
+                    <div className={`text-lg font-semibold ${txn.type === "Credit" ? "text-green-600" : "text-red-600"}`}>
                       {txn.type === "credit" ? "+" : "-"}{txn.amount} tokens
                     </div>
                   </div>
@@ -353,17 +352,16 @@ const TransactionHistory = () => {
               </div>
               <p className="text-gray-600 mt-2">Choose the perfect token package for your needs</p>
             </div>
-            
+
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {tokenPackages.map((pkg) => (
                   <div
                     key={pkg.id}
-                    className={`relative border-2 rounded-xl p-6 cursor-pointer transition-all hover:shadow-lg ${
-                      pkg.popular 
-                        ? "border-indigo-500 bg-indigo-50" 
+                    className={`relative border-2 rounded-xl p-6 cursor-pointer transition-all hover:shadow-lg ${pkg.popular
+                        ? "border-indigo-500 bg-indigo-50"
                         : "border-gray-200 hover:border-gray-300"
-                    }`}
+                      }`}
                     onClick={() => handleBuyTokens(pkg.id)}
                   >
                     {pkg.popular && (
@@ -373,40 +371,39 @@ const TransactionHistory = () => {
                         </span>
                       </div>
                     )}
-                    
+
                     <div className="text-center">
                       <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Coins className="w-8 h-8 text-indigo-600" />
                       </div>
-                      
+
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">
                         {pkg.tokens.toLocaleString()} Tokens
                       </h3>
-                      
+
                       <div className="text-3xl font-bold text-indigo-600 mb-2">
                         ₹{pkg.price}
                       </div>
-                      
+
                       {pkg.savings && (
                         <div className="text-sm text-green-600 font-medium mb-4">
                           {pkg.savings}
                         </div>
                       )}
-                      
+
                       <div className="text-sm text-gray-500 mb-6">
                         ₹{(pkg.price / pkg.tokens).toFixed(3)} per token
                       </div>
-                      
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleBuyTokens(pkg.id);
                         }}
-                        className={`w-full py-3 rounded-lg font-medium transition-colors ${
-                          pkg.popular
+                        className={`w-full py-3 rounded-lg font-medium transition-colors ${pkg.popular
                             ? "bg-indigo-600 hover:bg-indigo-700 text-white"
                             : "bg-gray-900 hover:bg-gray-800 text-white"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center justify-center gap-2">
                           <CreditCard className="w-4 h-4" />
@@ -417,7 +414,7 @@ const TransactionHistory = () => {
                   </div>
                 ))}
               </div>
-              
+
               <div className="mt-8 p-4 bg-blue-50 rounded-lg">
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">

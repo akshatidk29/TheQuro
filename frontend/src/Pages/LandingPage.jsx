@@ -7,19 +7,7 @@ import {
   Upload,
   MessageCircle,
   Brain,
-  FileText,
-  Users,
   Star,
-  CheckCircle,
-  Play,
-  BookOpen,
-  Zap,
-  Shield,
-  Globe,
-  Award,
-  TrendingUp,
-  Clock,
-  Heart
 } from "lucide-react";
 
 const features = [
@@ -49,14 +37,14 @@ const testimonials = [
     name: "Arihant Kumar Jain",
     role: "Medical Student",
     avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTocaOitRWeAmaGheXqBkOw7lGLs_HtLd7NZQ&s",
-    content: "The OCR feature is incredible - it reads my handwritten notes perfectly. Saves me hours of digitizing content manually.",
+    content: "The OCR (Optical Character Recognition) feature is absolutely incredible — it accurately reads and converts even my handwritten notes into digital text.",
     rating: 5
   },
   {
     name: "Vansh Pandey",
     role: "Engineering Student",
     avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqn7TZ5wF4kitnkl0l_HRrIbl3Ln0UGHY-4g&s",
-    content: "I love how it creates personalized study schedules. The AI knows exactly when I need to review topics before exams.",
+    content: "I love how it creates personalized study schedules for me. The AI knows exactly when I need to review topics before exams.",
     rating: 5
   }
 ];
@@ -64,7 +52,7 @@ const testimonials = [
 const stats = [
   { number: "10+", label: "Active Students" },
   { number: "50+", label: "Documents Processed" },
-  { number: "98%", label: "Accuracy Rate" },
+  { number: "95%", label: "Accuracy Rate" },
   { number: "24/7", label: "AI Availability" }
 ];
 
@@ -288,7 +276,7 @@ const LandingPage = () => {
             className="text-center mb-20"
           >
             <h2 className="text-4xl lg:text-6xl font-bold mb-6">What Students Say</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Join thousands of students who've transformed their learning
             </p>
           </motion.div>
@@ -316,7 +304,7 @@ const LandingPage = () => {
                     className="w-12 h-12 rounded-full mr-4"
                   />
                   <div>
-                    <div className="font-semibold">{testimonial.name}</div>
+                    <div className="font-semibold text-gray-400">{testimonial.name}</div>
                     <div className="text-sm text-gray-200">{testimonial.role}</div>
                   </div>
                 </div>

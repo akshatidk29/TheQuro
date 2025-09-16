@@ -95,7 +95,7 @@ const ProfilePage = () => {
         {/* Profile Card */}
         <div className="bg-white/80 backdrop-blur-sm border border-white/50 shadow-xl rounded-3xl overflow-hidden">
           {/* Card Header */}
-          <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 h-32 relative">
+          <div className="bg-gray-600 h-32 relative">
             <div className="absolute inset-0 bg-black/10"></div>
             <div className="absolute -bottom-16 left-8">
               <div
@@ -149,7 +149,6 @@ const ProfilePage = () => {
                 {/* Full Name Field */}
                 <div className="group">
                   <label className="flex items-center text-sm font-medium text-gray-600 mb-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
                     Full Name
                   </label>
 
@@ -197,7 +196,6 @@ const ProfilePage = () => {
                 {/* Email Field */}
                 <div className="group">
                   <label className="flex items-center text-sm font-medium text-gray-600 mb-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
                     Email Address
                   </label>
                   <div className="flex items-center p-4 bg-gray-50 rounded-xl border border-gray-200 group-hover:border-purple-300 transition-all duration-200">
@@ -214,14 +212,12 @@ const ProfilePage = () => {
               {/* Account Information */}
               <div className="space-y-6">
                 <div className="flex items-center mb-6">
-                  <Calendar className="w-5 h-5 text-purple-600 mr-2" />
                   <h3 className="text-xl font-semibold text-gray-800">Account Information</h3>
                 </div>
 
                 {/* Join Date */}
                 <div className="group">
                   <label className="flex items-center text-sm font-medium text-gray-600 mb-2">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mr-2"></div>
                     Member Since
                   </label>
                   <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
@@ -231,11 +227,11 @@ const ProfilePage = () => {
 
                 {/* Account Stats */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 text-white">
+                  <div className="bg-blue-600 rounded-xl p-4 text-white">
                     <div className="text-2xl font-bold">Active</div>
                     <div className="text-blue-100 text-sm">Account Status</div>
                   </div>
-                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 text-white">
+                  <div className="bg-green-600 rounded-xl p-4 text-white">
                     <div className="text-2xl font-bold">Verified</div>
                     <div className="text-purple-100 text-sm">Profile Status</div>
                   </div>

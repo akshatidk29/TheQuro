@@ -40,16 +40,14 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white/70 backdrop-blur-xl border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-white/70 backdrop-blur-xl border-b border-gray-200 sticky top-0 z-50 shadow-sm m-2">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 py-3">
         {/* Brand Logo */}
         <Link
           to="/home"
-          className="text-2xl font-extrabold tracking-tight text-gray-900 hover:opacity-90 transition"
+          className="text-3xl font-semibold tracking-wide text-gray-800 hover:text-gray-600 transition-colors duration-200"
         >
-          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            TheQuro
-          </span>
+          TheQuro
         </Link>
 
         {/* Navigation Links */}
@@ -60,8 +58,8 @@ const Navbar = () => {
                 key={path}
                 to={path}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${isActive(path)
-                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                   }`}
               >
                 <Icon size={18} />
